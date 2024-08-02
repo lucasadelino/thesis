@@ -41,7 +41,6 @@ def id_array_to_labels(id_array):
 
 
 def tokenize_and_align_labels(example, single_label=True):
-
     # Tokenize the sentence pair
     tokenized_inputs = tokenizer(
         example["sentence1_tokenized"],
@@ -117,6 +116,8 @@ def apply_tokenization(train_df, test_df, val_df, single_label=True):
 
 
 def compute_metrics(p: EvalPrediction):
+    global num_labels
+
     predictions, labels = p
     predictions = np.argmax(predictions, axis=2)
     y_pred = [
@@ -216,7 +217,9 @@ def test_metrics(p):
     return results
 
 
-def multilabel_test_metrics(predictions, labels, thresholds=[0.5] * num_labels):
+def multilabel_test_metrics(predictions, labels):
+    global num_labels
+    thresholds = [0.5] * num_labels
     thresholds = torch.Tensor(thresholds)
     # First, apply sigmoid on predictions
     sigmoid = torch.nn.Sigmoid()
@@ -299,7 +302,7 @@ def subset_labels(df, label_format):
 
 
 def show_test_result(trainer, test_df):
-    test_result = trainer.predict(test["inputs"].values)
+    test_result = trainer.predict(test_df["inputs"].values)
 
     # Print default metrics collected during prediction
     for item, value in test_result.metrics.items():
@@ -333,7 +336,7 @@ def show_test_result(trainer, test_df):
 
 
 def show_multilabel_test_result(trainer, test_df):
-    test_result = trainer.predict(test["inputs"].values)
+    test_result = trainer.predict(test_df["inputs"].values)
 
     # Print default metrics collected during prediction
     for item, value in test_result.metrics.items():
