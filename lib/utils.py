@@ -41,6 +41,8 @@ def id_array_to_labels(id_array):
 
 
 def tokenize_and_align_labels(example, single_label=True):
+    global num_labels
+
     # Tokenize the sentence pair
     tokenized_inputs = tokenizer(
         example["sentence1_tokenized"],
@@ -159,6 +161,7 @@ def optuna_hp_space(trial):
 
 
 def model_init():
+    global num_labels
     return BertForTokenClassification.from_pretrained(model_type, num_labels=num_labels)
 
 
@@ -169,6 +172,8 @@ def get_accuracy(input):
 # Defining evaluation metrics
 # source: https://jesusleal.io/2021/04/21/Longformer-multilabel-classification/
 def test_metrics(p):
+    global num_labels
+
     predictions, labels = p
     predictions = np.argmax(predictions, axis=2)
     y_pred = [
@@ -302,6 +307,8 @@ def subset_labels(df, label_format):
 
 
 def show_test_result(trainer, test_df):
+    global num_labels
+
     test_result = trainer.predict(test_df["inputs"].values)
 
     # Print default metrics collected during prediction
@@ -336,6 +343,8 @@ def show_test_result(trainer, test_df):
 
 
 def show_multilabel_test_result(trainer, test_df):
+    global num_labels
+
     test_result = trainer.predict(test_df["inputs"].values)
 
     # Print default metrics collected during prediction
