@@ -30,8 +30,6 @@ from sklearn.metrics import (
 # token_subgroup_single
 model_type = "bert-base-uncased"
 tokenizer = AutoTokenizer.from_pretrained(model_type)
-num_labels = 3
-label_format = "maj_multi"
 
 
 def id_array_to_labels(id_array):
